@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소형이사 견적 신청</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .move-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .move-type-item {
+            background: #fff;
+            border: 2px solid #eef0f3;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .move-type-item:hover {
+            border-color: #4a90e2;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .move-type-item.active {
+            border-color: #4a90e2;
+            background-color: #f8fbff;
+        }
+
+        .move-type-item h3 {
+            margin: 0 0 12px 0;
+            font-size: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .move-type-item h3::after {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('path/to/icon.svg') no-repeat center;
+            background-size: contain;
+        }
+
+        .move-type-item p {
+            margin: 0;
+            font-size: 15px;
+            color: #5c6c7c;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .service-icon {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eef0f3;
+            gap: 12px;
+        }
+
+        .service-icon span {
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            flex: 1;
+            position: relative;
+            padding-top: 24px;
+        }
+
+        .service-icon span::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .service-icon span::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: calc(50% + 6px);
+            width: 100%;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: -1;
+        }
+
+        .service-icon span:last-child::after {
+            display: none;
+        }
+
+        .service-icon span.active {
+            color: #4a90e2;
+            font-weight: 500;
+        }
+
+        .service-icon span.active::before {
+            background: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .move-type-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .move-type-item {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-form-container">
+        <!-- 진행 상태 바 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 50%"></div>
+            </div>
+            <div class="progress-labels">
+                <div class="progress-label">이사 일정</div>
+                <div class="progress-label active">이사 종류</div>
+                <div class="progress-label">이사 품목</div>
+                <div class="progress-label">상세 정보</div>
+            </div>
+        </div>
+
+        <h2 class="form-title">소형이사 견적 신청</h2>
+        
+        <form id="smallMoveTypeForm">
+            <div class="form-group">
+                <label class="form-label">이사 종류 선택</label>
+                <div class="move-type-grid">
+                    <div class="move-type-item" data-value="운송만">
+                        <h3>운송만</h3>
+                        <p>차량만 운전해드려요!</p>
+                        <div class="service-icon">
+                            <span>포장</span>
+                            <span>운반</span>
+                            <span class="active">이동</span>
+                            <span>운반</span>
+                            <span>뒷정리</span>
+                        </div>
+                    </div>
+                    <div class="move-type-item" data-value="일반이사">
+                        <h3>일반이사</h3>
+                        <p>집안까지 짐 운반만 도와드려요!</p>
+                        <div class="service-icon">
+                            <span>포장</span>
+                            <span class="active">운반</span>
+                            <span class="active">이동</span>
+                            <span class="active">운반</span>
+                            <span>뒷정리</span>
+                        </div>
+                    </div>
+                    <div class="move-type-item" data-value="반포장이사">
+                        <h3>반포장이사</h3>
+                        <p>잔짐 포장은 내가, 큰 짐은 업체가!</p>
+                        <div class="service-icon">
+                            <span class="active">포장</span>
+                            <span class="active">운반</span>
+                            <span class="active">이동</span>
+                            <span class="active">운반</span>
+                            <span>뒷정리</span>
+                        </div>
+                    </div>
+                    <div class="move-type-item" data-value="포장이사">
+                        <h3>포장이사</h3>
+                        <p>포장부터 잔짐정리까지!</p>
+                        <div class="service-icon">
+                            <span class="active">포장</span>
+                            <span class="active">운반</span>
+                            <span class="active">이동</span>
+                            <span class="active">운반</span>
+                            <span class="active">뒷정리</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 네비게이션 버튼 -->
+            <div class="nav-buttons">
+                <button type="button" class="nav-button prev-button" onclick="location.href='small-moving.html'">
+                    <i data-lucide="arrow-left"></i> 이전
+                </button>
+                <button type="button" class="nav-button next-button" onclick="goToItemSelection()">
+                    다음 <i data-lucide="arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // 저장된 데이터 불러오기
+            const moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+            
+            // 이사 종류 선택 상태 복원
+            if (moveData.moveType) {
+                const selectedType = document.querySelector(`.move-type-item[data-value="${moveData.moveType}"]`);
+                if (selectedType) {
+                    selectedType.classList.add('active');
+                }
+            }
+        });
+
+        document.querySelectorAll('.move-type-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 다른 항목의 active 클래스 제거
+                document.querySelectorAll('.move-type-item').forEach(el => {
+                    el.classList.remove('active');
+                });
+                // 클릭한 항목에 active 클래스 추가
+                this.classList.add('active');
+            });
+        });
+
+        // 다음 버튼 클릭 시 선택한 이사 종류 저장
+        function goToItemSelection() {
+            const selectedType = document.querySelector('.move-type-item.active');
+            if (!selectedType) {
+                alert('이사 종류를 선택해주세요.');
+                return;
+            }
+
+            let moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+            moveData.moveType = selectedType.dataset.value;
+            localStorage.setItem('moveQuoteData', JSON.stringify(moveData));
+
+            location.href = 'small-moving-items.html';
+        }
+    </script>
+</body>
+</html> 

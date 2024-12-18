@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사무실이사 견적 신청</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+</head>
+<body>
+    <div class="quote-form-container">
+        <!-- 진행 상태 바 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 66.66%"></div>
+            </div>
+            <div class="progress-labels">
+                <div class="progress-label">이사 일정</div>
+                <div class="progress-label active">상세 정보</div>
+                <div class="progress-label">신청 완료</div>
+            </div>
+        </div>
+
+        <h2 class="form-title">사무실이사 견적 신청</h2>
+        
+        <form id="moveDetailsForm">
+            <!-- 출발지 주소 -->
+            <div class="form-group">
+                <label class="form-label">출발지</label>
+                <div class="address-input-group">
+                    <div class="address-search">
+                        <input type="text" class="input-field" id="startAddress" placeholder="주소를 검색해주세요" readonly onclick="searchAddress('start')">
+                        <button type="button" class="search-button" onclick="searchAddress('start')">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </div>
+                    <div class="address-details">
+                        <div class="floor-select">
+                            <select class="input-field" name="startFloor" required>
+                                <option value="">층수 선택</option>
+                                <option value="-1">반지하</option>
+                                <option value="1">1층</option>
+                                <script>
+                                    for(let i = 2; i <= 25; i++) {
+                                        document.write(`<option value="${i}">${i}층</option>`);
+                                    }
+                                </script>
+                                <option value="26">26층 이상</option>
+                            </select>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="startHalfStairs">
+                                <span>반계단</span>
+                            </label>
+                        </div>
+                        <div class="elevator-buttons">
+                            <button type="button" class="elevator-button active" data-target="start" data-value="yes">
+                                엘리베이터 있음
+                            </button>
+                            <button type="button" class="elevator-button" data-target="start" data-value="no">
+                                엘리베이터 없음
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 도착지 주소 -->
+            <div class="form-group">
+                <label class="form-label">도착지</label>
+                <div class="address-input-group">
+                    <div class="address-search">
+                        <input type="text" class="input-field" id="endAddress" placeholder="주소를 검색해주세요" readonly onclick="searchAddress('end')">
+                        <button type="button" class="search-button" onclick="searchAddress('end')">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </div>
+                    <div class="address-details">
+                        <div class="floor-select">
+                            <select class="input-field" name="endFloor" required>
+                                <option value="">층수 선택</option>
+                                <option value="-1">반지하</option>
+                                <option value="1">1층</option>
+                                <script>
+                                    for(let i = 2; i <= 25; i++) {
+                                        document.write(`<option value="${i}">${i}층</option>`);
+                                    }
+                                </script>
+                                <option value="26">26층 이상</option>
+                            </select>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="endHalfStairs">
+                                <span>반계단</span>
+                            </label>
+                        </div>
+                        <div class="elevator-buttons">
+                            <button type="button" class="elevator-button active" data-target="end" data-value="yes">
+                                엘리베이터 있음
+                            </button>
+                            <button type="button" class="elevator-button" data-target="end" data-value="no">
+                                엘리베이터 없음
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 사무실 평수 -->
+            <div class="form-group">
+                <label class="form-label">현재 사무실 평수</label>
+                <div class="select-buttons house-size">
+                    <button type="button" class="select-button" data-value="0-15">15평 이하</button>
+                    <button type="button" class="select-button" data-value="15+">15평 이상</button>
+                </div>
+            </div>
+
+            <!-- 직원 수 -->
+            <div class="form-group">
+                <label class="form-label">직원 수</label>
+                <select class="input-field" name="employeeCount">
+                    <option value="">직원 수를 선택해주세요</option>
+                    <option value="1-5">1~5명</option>
+                    <option value="6-10">6~10명</option>
+                    <option value="11-15">11~15명</option>
+                    <option value="16-20">16~20명</option>
+                    <option value="21-30">21~30명</option>
+                    <option value="31-50">31~50명</option>
+                    <option value="51+">51명 이상</option>
+                    <option value="direct">직접 입력</option>
+                </select>
+                <input type="number" class="input-field" id="directEmployeeCount" 
+                    placeholder="직원 수를 입력해주세요" style="display: none; margin-top: 10px;" min="1">
+            </div>
+
+            <!-- 사무실 용도 -->
+            <div class="form-group">
+                <label class="form-label">사무실 용도</label>
+                <div class="select-buttons office-type">
+                    <button type="button" class="select-button" data-value="공장">공장</button>
+                    <button type="button" class="select-button" data-value="카페">카페</button>
+                    <button type="button" class="select-button" data-value="사무실">사무실</button>
+                    <button type="button" class="select-button" data-value="창고">창고</button>
+                    <button type="button" class="select-button" data-value="학원">학원/교육시설</button>
+                    <button type="button" class="select-button" data-value="연구소">연구소/실험실</button>
+                    <button type="button" class="select-button" data-value="병원">병원/의료기관</button>
+                    <button type="button" class="select-button" data-value="매장">소매점/매장</button>
+                    <button type="button" class="select-button" data-value="기타">기타</button>
+                </div>
+                <input type="text" class="input-field" id="otherOfficeType" 
+                    placeholder="기타 선택 시 입력해주세요" style="display: none;">
+            </div>
+
+            <!-- 온풍기 유무 -->
+            <div class="form-group">
+                <label class="form-label">온풍기 유무</label>
+                <div class="select-buttons heater-exists">
+                    <button type="button" class="select-button" data-value="yes">있음</button>
+                    <button type="button" class="select-button" data-value="no">없음</button>
+                </div>
+            </div>
+
+            <!-- 네비게이션 버튼 -->
+            <div class="nav-buttons">
+                <button type="button" class="nav-button prev-button" onclick="location.href='office-moving-schedule.html'">
+                    <i data-lucide="arrow-left"></i> 이전
+                </button>
+                <button type="button" class="nav-button next-button" onclick="submitOfficeDetails(event)">
+                    다음 <i data-lucide="arrow-right"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 사무실 용도 '기타' 선택 시 입력 필드 표시
+        document.querySelectorAll('.office-type .select-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const otherInput = document.getElementById('otherOfficeType');
+                otherInput.style.display = this.dataset.value === '기타' ? 'block' : 'none';
+                if (this.dataset.value !== '기타') {
+                    otherInput.value = '';
+                }
+            });
+        });
+
+        // submitOfficeDetails 함수 수정
+        async function submitOfficeDetails(event) {
+            event.preventDefault();
+            
+            // 필수 입력값 검증
+            if (!document.getElementById('startAddress').value) {
+                alert('출발지 주소를 입력해주세요.');
+                return false;
+            }
+            if (!document.querySelector('[name="startFloor"]').value) {
+                alert('출발지 층수를 선택해주세요.');
+                return false;
+            }
+            if (!document.getElementById('endAddress').value) {
+                alert('도착지 주소를 입력해주세요.');
+                return false;
+            }
+            if (!document.querySelector('[name="endFloor"]').value) {
+                alert('도착지 층수를 선택해주세요.');
+                return false;
+            }
+            if (!document.querySelector('.house-size .select-button.active')) {
+                alert('사무실 평수를 선택해주세요.');
+                return false;
+            }
+            if (!document.querySelector('[name="employeeCount"]').value) {
+                alert('직원 수를 선택해주세요.');
+                return false;
+            }
+            if (!document.querySelector('.office-type .select-button.active')) {
+                alert('사무실 용도를 선택해주세요.');
+                return false;
+            }
+            if (!document.querySelector('.heater-exists .select-button.active')) {
+                alert('온풍기 유무를 선택해주세요.');
+                return false;
+            }
+            
+            // 기타 선택 시 입력값 확인
+            const officeType = document.querySelector('.office-type .select-button.active').dataset.value;
+            if (officeType === '기타' && !document.getElementById('otherOfficeType').value) {
+                alert('기타 사무실 용도를 입력해주세요.');
+                return false;
+            }
+            
+            // 데이터 수집
+            let moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+            
+            // 데이터 저장
+            moveData = {
+                ...moveData,
+                // 출발지 정보
+                startAddress: document.getElementById('startAddress').value,
+                startFloor: document.querySelector('[name="startFloor"]').value,
+                startHalfStairs: document.querySelector('[name="startHalfStairs"]').checked,
+                startElevator: document.querySelector('.elevator-button.active[data-target="start"]').dataset.value,
+                
+                // 도착지 정보
+                endAddress: document.getElementById('endAddress').value,
+                endFloor: document.querySelector('[name="endFloor"]').value,
+                endHalfStairs: document.querySelector('[name="endHalfStairs"]').checked,
+                endElevator: document.querySelector('.elevator-button.active[data-target="end"]').dataset.value,
+                
+                // 사무실 정보
+                officeSize: document.querySelector('.house-size .select-button.active').dataset.value,
+                employeeCount: document.querySelector('[name="employeeCount"]').value,
+                officeType: officeType === '기타' ? document.getElementById('otherOfficeType').value : officeType,
+                heaterExists: document.querySelector('.heater-exists .select-button.active').dataset.value
+            };
+
+            localStorage.setItem('moveQuoteData', JSON.stringify(moveData));
+            location.href = 'office-moving-final.html';
+        }
+
+        // WEBHOOK_URL 상수 추가
+        const WEBHOOK_URL = 'https://discord.com/api/webhooks/1316231070441803816/3ELVqV5Qu73OT5L1ekSKGeqRfDXgyQMdNmRZBu840XZpsMgBbFqdiOIKVSNGkT_Tw1Ck';
+
+        // DOMContentLoaded 이벤트에서도 키 이름 수정
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // moveQuoteData에서 데이터 불러오기
+            const moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+            
+            // 데이터 복원 로직...
+        });
+    </script>
+</body>
+</html> 

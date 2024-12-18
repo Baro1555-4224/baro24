@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소형이사 견적 신청</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="script.js"></script>
+    <style>
+        .truck-count-options {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+        
+        .radio-label {
+            display: inline-block;
+            cursor: pointer;
+            position: relative;
+            padding: 12px 24px;
+            background: #fff;
+            border: 2px solid #eef0f3;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .radio-label:hover {
+            border-color: #4a90e2;
+            background-color: #f8fbff;
+        }
+        
+        .radio-label input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+        
+        .radio-label span {
+            font-size: 15px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .radio-label input[type="radio"]:checked + span {
+            color: #4a90e2;
+        }
+        
+        .radio-label input[type="radio"]:checked + span::before {
+            content: '✓';
+            margin-right: 6px;
+        }
+        
+        .radio-label input[type="radio"]:checked ~ .radio-label {
+            border-color: #4a90e2;
+            background-color: #f8fbff;
+            box-shadow: 0 2px 6px rgba(74, 144, 226, 0.2);
+        }
+        
+        .select-card {
+            cursor: pointer;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .select-card.selected {
+            background-color: #007bff;
+            color: white;
+            border-color: #0056b3;
+            box-shadow: 0 0 10px rgba(0,123,255,0.5);
+        }
+        
+        .truck-count-selection {
+            margin-top: 8px;
+        }
+
+        .card-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .select-card {
+            cursor: pointer;
+            border: 2px solid #eef0f3;
+            border-radius: 8px;
+            padding: 8px 16px;
+            min-width: 80px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .select-card h3 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .select-card p {
+            margin: 4px 0 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .select-card:hover {
+            border-color: #4a90e2;
+            background-color: #f8fbff;
+        }
+
+        .select-card.selected {
+            border-color: #4a90e2;
+            background-color: #f8fbff;
+            color: #4a90e2;
+            box-shadow: 0 2px 6px rgba(74, 144, 226, 0.2);
+        }
+
+        .select-card.selected h3 {
+            color: #4a90e2;
+        }
+    </style>
+</head>
+<body>
+    <div class="quote-form-container">
+        <!-- 진행 상태 바 -->
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 100%"></div>
+            </div>
+            <div class="progress-labels">
+                <div class="progress-label">이사 일정</div>
+                <div class="progress-label">이사 종류</div>
+                <div class="progress-label">이사 품목</div>
+                <div class="progress-label active">상세 정보</div>
+            </div>
+        </div>
+
+        <h2 class="form-title">소형이사 견적 신청</h2>
+        
+        <form id="smallMoveQuoteForm" onsubmit="return submitFinalForm(event)">
+            <!-- 출발지 주소 -->
+            <div class="form-group">
+                <label class="form-label">출발지</label>
+                <div class="address-input-group">
+                    <div class="address-search">
+                        <input type="text" class="input-field" id="startAddress" placeholder="주소를 검색해주세요" readonly onclick="searchAddress('start')">
+                        <button type="button" class="search-button" onclick="searchAddress('start')">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </div>
+                    <div class="address-details">
+                        <div class="floor-select">
+                            <select class="input-field" name="startFloor" required>
+                                <option value="">층수 선택</option>
+                                <option value="-1">반지하</option>
+                                <option value="1">1층</option>
+                                <script>
+                                    for(let i = 2; i <= 25; i++) {
+                                        document.write(`<option value="${i}">${i}층</option>`);
+                                    }
+                                </script>
+                                <option value="26">26층 이상</option>
+                            </select>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="startHalfStairs">
+                                <span>반계단</span>
+                            </label>
+                        </div>
+                        <div class="elevator-buttons">
+                            <button type="button" class="elevator-button active" data-target="start" data-value="yes">
+                                엘리베이터 있음
+                            </button>
+                            <button type="button" class="elevator-button" data-target="start" data-value="no">
+                                엘리베이터 없음
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 도착지 주소 -->
+            <div class="form-group">
+                <label class="form-label">도착지</label>
+                <div class="address-input-group">
+                    <div class="address-search">
+                        <input type="text" class="input-field" id="endAddress" placeholder="주소를 검색해주세요" readonly onclick="searchAddress('end')">
+                        <button type="button" class="search-button" onclick="searchAddress('end')">
+                            <i data-lucide="search"></i>
+                        </button>
+                    </div>
+                    <div class="address-details">
+                        <div class="floor-select">
+                            <select class="input-field" name="endFloor" required>
+                                <option value="">층수 선택</option>
+                                <option value="-1">반지하</option>
+                                <option value="1">1층</option>
+                                <script>
+                                    for(let i = 2; i <= 25; i++) {
+                                        document.write(`<option value="${i}">${i}층</option>`);
+                                    }
+                                </script>
+                                <option value="26">26층 이상</option>
+                            </select>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="endHalfStairs">
+                                <span>반계단</span>
+                            </label>
+                        </div>
+                        <div class="elevator-buttons">
+                            <button type="button" class="elevator-button active" data-target="end" data-value="yes">
+                                엘리베이터 있음
+                            </button>
+                            <button type="button" class="elevator-button" data-target="end" data-value="no">
+                                엘리베이터 없음
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 개인 정보 -->
+            <div class="form-group">
+                <label class="form-label">성함</label>
+                <input type="text" class="input-field" name="name" required placeholder="성함을 입력해주세요">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">연락처</label>
+                <input type="tel" class="input-field" name="phone" required placeholder="'-' 없이 숫자만 입력해주세요"
+                    pattern="[0-9]{10,11}" title="10-11자리 숫자로 입력해주세요">
+            </div>
+
+            <!-- 1톤 용달 대수 선택 -->
+            <div class="form-group">
+                <label class="form-label">1톤 용달 몇대에 가능할까요?</label>
+                <div class="truck-count-selection">
+                    <div class="card-container">
+                        <div class="select-card" data-truck-count="1" onclick="selectTruckCount(1)">
+                            <h3>1대</h3>
+                            <p>기본 1톤</p>
+                        </div>
+                        <div class="select-card" data-truck-count="2" onclick="selectTruckCount(2)">
+                            <h3>2대</h3>
+                            <p>2.5톤</p>
+                        </div>
+                        <div class="select-card" data-truck-count="3" onclick="selectTruckCount(3)">
+                            <h3>3대</h3>
+                            <p>5톤</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 메모 -->
+            <div class="form-group">
+                <label class="form-label">메모 <span class="optional-label">(선택사항)</span></label>
+                <textarea class="input-field" name="memo" rows="4" 
+                    placeholder="전달하실 내용이 있다면 자유롭게 입력해주세요"></textarea>
+            </div>
+
+            <!-- 개인정보 동의 -->
+            <div class="form-group">
+                <label class="checkbox-label privacy-agreement">
+                    <input type="checkbox" name="privacyAgreement" required>
+                    <span>
+                        <a href="#" onclick="showPrivacyModal(event)">개인정보 수집 및 이용</a>에 동의합니다.
+                        <span class="required">(필수)</span>
+                    </span>
+                </label>
+            </div>
+
+            <!-- 네비게이션 버튼 -->
+            <div class="nav-buttons">
+                <button type="button" class="nav-button prev-button" onclick="history.back()">
+                    <i data-lucide="arrow-left"></i> 이전
+                </button>
+                <button type="submit" class="nav-button next-button">
+                    견적신청 <i data-lucide="check"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        
+        // 저장된 데이터 불러오기
+        const moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+        
+        // 주소 정보 복원
+        if (moveData.startAddress) {
+            document.getElementById('startAddress').value = moveData.startAddress;
+        }
+        if (moveData.startFloor) {
+            document.querySelector('[name="startFloor"]').value = moveData.startFloor;
+        }
+        if (moveData.startHalfStairs) {
+            document.querySelector('[name="startHalfStairs"]').checked = moveData.startHalfStairs;
+        }
+        if (moveData.startElevator) {
+            document.querySelectorAll('.elevator-button[data-target="start"]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === moveData.startElevator);
+            });
+        }
+        
+        // 도착지 정보 복원
+        if (moveData.endAddress) {
+            document.getElementById('endAddress').value = moveData.endAddress;
+        }
+        if (moveData.endFloor) {
+            document.querySelector('[name="endFloor"]').value = moveData.endFloor;
+        }
+        if (moveData.endHalfStairs) {
+            document.querySelector('[name="endHalfStairs"]').checked = moveData.endHalfStairs;
+        }
+        if (moveData.endElevator) {
+            document.querySelectorAll('.elevator-button[data-target="end"]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === moveData.endElevator);
+            });
+        }
+        
+        // 개인정보 복원
+        if (moveData.name) {
+            document.querySelector('[name="name"]').value = moveData.name;
+        }
+        if (moveData.phone) {
+            document.querySelector('[name="phone"]').value = moveData.phone;
+        }
+        if (moveData.truckCount) {
+            document.querySelector(`[name="truckCount"][value="${moveData.truckCount}"]`).checked = true;
+        }
+        if (moveData.memo) {
+            document.querySelector('[name="memo"]').value = moveData.memo;
+        }
+    });
+
+    function submitFinalForm(event) {
+        event.preventDefault();
+        
+        // 필수 입력값 검증
+        if (!document.querySelector('[name="name"]').value) {
+            alert('성함을 입력해주세요.');
+            return false;
+        }
+        if (!document.querySelector('[name="phone"]').value) {
+            alert('연락처를 입력해주세요.');
+            return false;
+        }
+        if (!document.querySelector('[name="privacyAgreement"]').checked) {
+            alert('개인정보 수집 및 이용에 동의해주세요.');
+            return false;
+        }
+
+        // 기존 데이터 가져오기
+        let moveData = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+        
+        // 새로운 데이터 추가
+        const formData = new FormData(event.target);
+        moveData = {
+            ...moveData,
+            startAddress: document.getElementById('startAddress').value,
+            startFloor: document.querySelector('[name="startFloor"]').value,
+            startHalfStairs: document.querySelector('[name="startHalfStairs"]').checked,
+            startElevator: document.querySelector('.elevator-button.active[data-target="start"]').dataset.value,
+            endAddress: document.getElementById('endAddress').value,
+            endFloor: document.querySelector('[name="endFloor"]').value,
+            endHalfStairs: document.querySelector('[name="endHalfStairs"]').checked,
+            endElevator: document.querySelector('.elevator-button.active[data-target="end"]').dataset.value,
+            name: formData.get('name'),
+            phone: formData.get('phone'),
+            memo: formData.get('memo') || '',
+            truckCount: document.querySelector('.select-card.selected')?.dataset.truckCount || '1'
+        };
+
+        try {
+            // localStorage에 최종 데이터 저장
+            localStorage.setItem('moveQuoteData', JSON.stringify(moveData));
+
+            // 결과 페이지로 이동 (new 파라미터 추가)
+            window.location.href = 'small-moving-result.html?new=true';
+        } catch (error) {
+            alert('견적 신청 중 오류가 발생했습니다.');
+        }
+    }
+
+    function selectTruckCount(count) {
+        // 모든 카드의 선택 상태를 초기화
+        document.querySelectorAll('.select-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // 선택된 카드에 selected 클래스 추가
+        const selectedCard = document.querySelector(`[data-truck-count="${count}"]`);
+        selectedCard.classList.add('selected');
+        
+        // 선택된 값을 저장하거나 다른 처리를 수행
+        // 예: localStorage.setItem('selectedTruckCount', count);
+    }
+
+    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1316231070441803816/3ELVqV5Qu73OT5L1ekSKGeqRfDXgyQMdNmRZBu840XZpsMgBbFqdiOIKVSNGkT_Tw1Ck';
+
+    document.getElementById('smallMoveQuoteForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        let message = '**[소형 이사 견적 신청]**\n```\n';
+        
+        for (let [key, value] of formData.entries()) {
+            message += `${key}: ${value}\n`;
+        }
+        message += '```';
+        
+        try {
+            await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    content: message
+                })
+            });
+            alert('견적 신청이 완료되었습니다.');
+            this.reset();
+        } catch (error) {
+            alert('견적 신청 중 오류가 발생했습니다.');
+        }
+    });
+    </script>
+
+    <!-- 개인정보 동의 모달 -->
+    <div id="privacyModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content privacy-modal">
+            <div class="modal-header">
+                <h3>개인정보 수집 및 이용 동의</h3>
+                <button type="button" class="close-button" onclick="closePrivacyModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="privacy-content">
+                    <h4>개인정보 처리방침</h4>
+                    <p>바로이사(이하 "회사"라 함)는 통신비밀보호법, 전기통신사업법, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 등 정보통신서비스제공자가 준수하여야 할 관련 법령상의 개인정보보호 규정을 준수하며, 관련 법령에 의거한 개인정보처리방침을 정하여 이용자 권익 보호에 최선을 다하고 있습니다.</p>
+
+                    <h4>1. 수집하는 개인정보 항목</h4>
+                    <p>◆ 필수항목</p>
+                    <p>- 성명</p>
+                    <p>- 전화번호 및 팩스번호(집, 사무실, 휴대폰, 팩스 등)</p>
+                    <p>- 주소 (출발지 및 도착지 주소)</p>
+                    <p>- 이사일 (서비스일, 출고일, 입고일)</p>
+                    
+                    <p>◆ 선택항목</p>
+                    <p>- 작업항목</p>
+                    <p>- 이사화물의 목록</p>
+                    <p>- 거주조건</p>
+                    <p>- 서비스 신청 사유</p>
+
+                    <h4>2. 개인정보의 수집 및 이용목적</h4>
+                    <p>- 이사 견적 상담 및 서비스 제공</p>
+                    <p>- 고객 문의 응대 및 관리</p>
+                    <p>- 서비스 이용에 따른 본인확인, 요금정산</p>
+
+                    <h4>3. 개인정보의 보유 및 이용기간</h4>
+                    <p>회사는 원칙적으로 개인정보 수집 및 이용목적이 달성되거나 이용자의 파기요청이 있는 경우 지체 없이 파기합니다. 단, 관계법령에 따라 다음과 같이 보관됩니다:</p>
+                    <p>- 계약 또는 청약철회 등에 관한 기록: 5년</p>
+                    <p>- 대금결제 및 재화 등의 공급에 관한 기록: 5년</p>
+                    <p>- 소비자의 불만 또는 분쟁처리에 관한 기록: 3년</p>
+
+                    <h4>4. 제3자 정보제공 동의</h4>
+                    <p>회사는 이용자의 개인정보를 원칙적으로 외부에 제공하지 않습니다. 다만, 아래의 경우에는 예외로 합니다.</p>
+                    <p>- 이사 서비스 제공을 위해 필요한 최소한의 개인정보를 서비스 제공업체에 제공</p>
+                    <p>- 법령의 규정에 의거하거나, 수사 목적으로 법령에 정해진 절차와 방법에 따라 수사기관의 요구가 있는 경우</p>
+
+                    <h4>5. 이용자의 권리와 행사방법</h4>
+                    <p>이용자는 언제든지 등록되어 있는 자신의 개인정보를 조회하거나 수정할 수 있으며 개인정보의 삭제를 요청할 수 있습니다.</p>
+
+                    <h4>6. 취소 및 환불규정</h4>
+                    <p>- 계약금이 입금된 순간부터 취소환불은 불가합니다.</p>
+                    <p>- 취소는 업무시간에만 가능합니다. (월~금 09:00-18:00)</p>
+                    <p>- 당사는 최소 가격의 화물기사 및 업체를 주선하는 주선업체로서 운송과정에서 생기는 모든 분실, 훼손, 파손에 대해서는 책임지지 않습니다.</p>
+
+                    <h4>7. 개인정보보호책임자</h4>
+                    <p>회사는 개인정보 처리에 관한 업무를 총괄해서 책임지고, 개인정보 처리와 관련한 정보주체의 불만처리 및 피해구제를 처리하기 위하여 아래와 같이 개인정보 보호책임자를 지정하고 있습니다.</p>
+                    <p>▶ 개인정보보호책임자</p>
+                    <p>- 성명: 김은성</p>
+                    <p>- 직책: 대표</p>
+                    <p>- 연락처: 1555-4224</p>
+
+                    <p class="privacy-date">공고일자: 2024년 12월 16일</p>
+                    <p class="privacy-date">시행일자: 2024년 12월 16일</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="nav-button next-button" onclick="closePrivacyModal()">
+                    확인
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
