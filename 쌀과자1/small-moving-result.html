@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소형이사 견적 신청 완료</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</head>
+<body>
+    <div class="quote-form-container">
+        <div class="complete-container">
+            <div class="complete-icon">
+                <i data-lucide="check-circle" class="success-icon"></i>
+            </div>
+            <h2 class="complete-title">견적 신청이 완료되었습니다!</h2>
+            <p class="complete-message">
+                빠른 시간 내에 연락드리도록 하겠습니다.<br>
+                감사합니다.
+            </p>
+            <button type="button" class="nav-button home-button" onclick="location.href='index.html'">
+                <i data-lucide="home"></i> 홈으로
+            </button>
+        </div>
+        <div class="quote-summary">
+            <h3>견적 신청 내용</h3>
+            <div class="summary-content">
+                <dl>
+                    <dt>이사 종류</dt>
+                    <dd id="summaryMoveType"></dd>
+                    
+                    <dt>이사 희망일</dt>
+                    <dd id="summaryMoveDate"></dd>
+                    
+                    <dt>날짜 변동 가능</dt>
+                    <dd id="summaryFlexible"></dd>
+                    
+                    <dt>보관이사 필요</dt>
+                    <dd id="summaryStorage"></dd>
+                    
+                    <dt>출발지</dt>
+                    <dd id="summaryStart"></dd>
+                    <dt>출발지 층수</dt>
+                    <dd id="summaryStartFloor"></dd>
+                    <dt>출발지 엘리베이터</dt>
+                    <dd id="summaryStartElevator"></dd>
+                    
+                    <dt>도착지</dt>
+                    <dd id="summaryEnd"></dd>
+                    <dt>도착지 층수</dt>
+                    <dd id="summaryEndFloor"></dd>
+                    <dt>도착지 엘리베이터</dt>
+                    <dd id="summaryEndElevator"></dd>
+                    
+                    <dt>선택한 물품</dt>
+                    <dd id="summaryItems"></dd>
+                    
+                    <dt>성함</dt>
+                    <dd id="summaryName"></dd>
+                    
+                    <dt>연락처</dt>
+                    <dd id="summaryPhone"></dd>
+                    
+                    <dt>1톤 용달 대수</dt>
+                    <dd id="summaryTruckCount"></dd>
+                    
+                    <dt>메모</dt>
+                    <dd id="summaryMemo"></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const data = JSON.parse(localStorage.getItem('moveQuoteData') || '{}');
+        
+        // URL에서 새로운 견적신청인지 확인
+        const urlParams = new URLSearchParams(window.location.search);
+        const isNewQuote = urlParams.get('new') === 'true';
+        
+        // 새로운 견적신청일 때만 디스코드로 전송
+        if (data.name && isNewQuote) {
+            const message = {
+                embeds: [{
+                    title: "📦 소형 이사 견적신청",
+                    color: 0xffa500,
+                    description: 
+                        `**이사종류**: ${data.moveType}\n` +
+                        `**신청자**: ${data.name} / ${data.phone}\n` +
+                        `**이사일정**: ${data.moveDate} (${data.isFlexible ? '날짜변동가능' : '날짜확정'}) / ${data.needsStorage ? '보관이사필요' : '보관이사없음'}\n\n` +
+                        `**선택한 가구**:\n${data.selectedItems?.filter(item => ['침대', '옷장', '책장', '책상', '의자', '테이블', '소파', '화장대', '수납장', '서랍장'].includes(item.name))
+                            .map(item => {
+                                let text = `⤷ ${item.name}`;
+                                if (item.options) {
+                                    const optionTexts = [];
+                                    if (item.options.size) optionTexts.push(item.options.size);
+                                    if (item.options.type) optionTexts.push(item.options.type);
+                                    if (item.options.frame) optionTexts.push(item.options.frame);
+                                    if (item.options.assembly) optionTexts.push(item.options.assembly === '필요' ? '분해필요' : '분해불필요');
+                                    if (item.options.width) optionTexts.push(`너비 ${item.options.width}`);
+                                    if (item.options.height) optionTexts.push(`높이 ${item.options.height}`);
+                                    if (item.options.quantity) optionTexts.push(`${item.options.quantity}개`);
+                                    if (optionTexts.length) text += ` (${optionTexts.join(', ')})`;
+                                }
+                                return text;
+                            }).join('\n') || '없음'}\n\n` +
+                        `**선택한 가전**:\n${data.selectedItems?.filter(item => ['TV/모니터', '세탁기', '건조기', '에어컨', '냉장고'].includes(item.name))
+                            .map(item => {
+                                let text = `⤷ ${item.name}`;
+                                if (item.options) {
+                                    const optionTexts = [];
+                                    if (item.options.type) optionTexts.push(item.options.type);
+                                    if (item.options.size) optionTexts.push(item.options.size);
+                                    if (item.options.assembly) optionTexts.push(item.options.assembly === '필요' ? '분해필요' : '분해불필요');
+                                    if (item.options.separation) optionTexts.push(item.options.separation === '필요' ? '분리필요' : '분리불필요');
+                                    if (item.options.quantity) optionTexts.push(`${item.options.quantity}개`);
+                                    if (optionTexts.length) text += ` (${optionTexts.join(', ')})`;
+                                }
+                                return text;
+                            }).join('\n') || '없음'}\n\n` +
+                        `**선택한 소형가전**:\n${data.selectedItems?.filter(item => !['침대', '옷장', '책장', '책상', '의자', '테이블', '소파', '화장대', '수납장', '서랍장', 'TV/모니터', '세탁기', '건조기', '에어컨', '냉장고'].includes(item.name))
+                            .map(item => {
+                                let text = `⤷ ${item.name}`;
+                                if (item.options && item.options.quantity) {
+                                    text += ` ${item.options.quantity}개`;
+                                }
+                                return text;
+                            }).join('\n') || '없음'}\n\n` +
+                        `**잔짐박스**: ${data.boxCount || '없음'}\n\n` +
+                        `**출발지**: ${data.startAddress}\n` +
+                        `⤷ ${data.startFloor === '-1' ? '반지하' : data.startFloor + '층'}${data.startHalfStairs ? ' (반계단)' : ''} / ${data.startElevator === 'yes' ? '엘베○' : '엘베×'}\n\n` +
+                        `**도착지**: ${data.endAddress}\n` +
+                        `⤷ ${data.endFloor === '-1' ? '반지하' : data.endFloor + '층'}${data.endHalfStairs ? ' (반계단)' : ''} / ${data.endElevator === 'yes' ? '엘베○' : '엘베×'}\n\n` +
+                        `**1톤 용달**: ${data.truckCount}대\n` +
+                        `**메모**: ${data.memo || '없음'}`,
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch("https://discord.com/api/webhooks/1316231070441803816/3ELVqV5Qu73OT5L1ekSKGeqRfDXgyQMdNmRZBu840XZpsMgBbFqdiOIKVSNGkT_Tw1Ck", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message)
+            })
+            .catch(error => console.error('디스코드 웹훅 전송 실패:', error));
+        }
+
+        // 기본 정보 표시
+        document.getElementById('summaryMoveDate').textContent = data.moveDate || '-';
+        document.getElementById('summaryFlexible').textContent = data.isFlexible ? '예' : '아니오';
+        document.getElementById('summaryStorage').textContent = data.needsStorage ? '예' : '아니오';
+        document.getElementById('summaryMoveType').textContent = data.moveType || '-';
+        
+        // 주소 정보
+        document.getElementById('summaryStart').textContent = data.startAddress || '-';
+        document.getElementById('summaryStartFloor').textContent = 
+            `${data.startFloor}층${data.startHalfStairs ? ' (반계단)' : ''}`;
+        document.getElementById('summaryStartElevator').textContent = 
+            data.startElevator === 'yes' ? '있음' : '없음';
+        
+        document.getElementById('summaryEnd').textContent = data.endAddress || '-';
+        document.getElementById('summaryEndFloor').textContent = 
+            `${data.endFloor}층${data.endHalfStairs ? ' (반계단)' : ''}`;
+        document.getElementById('summaryEndElevator').textContent = 
+            data.endElevator === 'yes' ? '있음' : '없음';
+        
+        // 선택한 물품 목록과 옵션 표시
+        const itemsContainer = document.getElementById('summaryItems');
+        if (data.selectedItems && data.selectedItems.length > 0) {
+            const itemsList = data.selectedItems.map(item => {
+                let itemText = item.name;
+                if (item.options) {
+                    if (item.options.quantity) {
+                        itemText += ` ${item.options.quantity}개`;
+                    }
+                    if (item.options.size) {
+                        itemText += ` (${item.options.size})`;
+                    }
+                    if (item.options.type) {
+                        itemText += ` (${item.options.type})`;
+                    }
+                }
+                return itemText;
+            });
+            
+            // 박스 개수 추가
+            if (data.boxCount) {
+                itemsList.push(`잔짐(박스) ${data.boxCount}박스`);
+            }
+            
+            itemsContainer.innerHTML = itemsList.join('<br>');
+        } else {
+            itemsContainer.textContent = '-';
+        }
+        
+        // 개인 정보
+        document.getElementById('summaryName').textContent = data.name || '-';
+        document.getElementById('summaryPhone').textContent = data.phone || '-';
+        document.getElementById('summaryTruckCount').textContent = data.truckCount ? `${data.truckCount}대` : '-';
+        document.getElementById('summaryMemo').textContent = data.memo || '-';
+        
+        localStorage.removeItem('moveQuoteData');
+    });
+    </script>
+</body>
+</html> 
