@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이사 견적 신청</title>
+    
+    <!-- CSS 먼저 로드 -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- 외부 라이브러리 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    
+    <!-- 메인 스크립트는 마지막에 로드 -->
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div class="quote-form-container">
+        <div class="form-group">
+            <label class="form-label">이사 종류 선택 후 <br><b>간단하게 접수해보세요!</b></label>
+            <div class="move-type-buttons">
+                <button type="button" class="select-button" data-value="가정이사">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1 text-gray-400">
+                            <i data-lucide="home"></i>
+                        </div>
+                        <div>
+                            <span class="move-type-title">가정이사</span>
+                            <span class="move-type-description">
+                                1톤 초과 짐 <br>
+                                아파트, 빌라 등 일반 주택 이사 <br>
+                            </span>
+                        </div>
+                    </div>
+                </button>
+                
+                <button type="button" class="select-button" data-value="소형이사">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1 text-gray-400">
+                            <i data-lucide="box"></i>
+                        </div>
+                        <div>
+                            <span class="move-type-title">소형이사</span>
+                            <span class="move-type-description">
+                                1톤 이하 짐 <br>
+                                원룸, 투룸, 오피스텔 등<br>
+                            </span>
+                        </div>
+                    </div>
+                </button>
+
+                <button type="button" class="select-button" data-value="사무실이사">
+                    <div class="flex items-start gap-4">
+                        <div class="mt-1 text-gray-400">
+                            <i data-lucide="building-2"></i>
+                        </div>
+                        <div>
+                            <span class="move-type-title">사무실이사</span>
+                            <span class="move-type-description">
+                                1톤 초과 짐<br>
+                                빌딩, 공장, 회사, 상가 등 업무 공간 이전에 특화된 서비스입니다.
+                            </span>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        <button type="button" class="nav-button next-button full-width" onclick="goToMoveType()" style="margin-top: 20px;">다음</button>
+    </div>
+</body>
+</html>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    
+    // 새로운 견적 신청 시작 시 localStorage 초전 초기화
+    localStorage.clear();
+    
+    // 이사 종류 선택 버튼에 이벤트 리스너 추가
+    document.querySelectorAll('.select-button').forEach(button => {
+        button.addEventListener('click', () => {
+            // 기존 active 클래스 제거
+            document.querySelectorAll('.select-button').forEach(btn => 
+                btn.classList.remove('active'));
+            // 클릭된 버튼에 active 클래스 추가
+            button.classList.add('active');
+        });
+    });
+});
+
+function goToMoveType() {
+    const selectedButton = document.querySelector('.select-button.active');
+    if (!selectedButton) {
+        alert('이사 종류를 선택해주세요.');
+        return;
+    }
+
+    const moveType = selectedButton.dataset.value === '가정이사' ? 'home' : 
+                    selectedButton.dataset.value === '소형이사' ? 'small' : 'office';
+    
+    let moveData = {
+        moveType: moveType
+    };
+    localStorage.setItem('moveQuoteData', JSON.stringify(moveData));
+    
+    switch(moveType) {
+        case 'home':
+            location.href = 'home-moving.html';
+            break;
+        case 'small':
+            location.href = 'small-moving.html';
+            break;
+        case 'office':
+            location.href = 'office-moving.html';
+            break;
+    }
+}
+
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1316231070441803816/3ELVqV5Qu73OT5L1ekSKGeqRfDXgyQMdNmRZBu840XZpsMgBbFqdiOIKVSNGkT_Tw1Ck';
+
+document.getElementById('officeQuoteForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    let message = '**[사무실 이사 견적 신청]**\n```\n';
+    
+    for (let [key, value] of formData.entries()) {
+        message += `${key}: ${value}\n`;
+    }
+    message += '```';
+    
+    try {
+        await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: message
+            })
+        });
+        alert('견적 신청이 완료되었습니다.');
+        this.reset();
+    } catch (error) {
+        alert('견적 신청 중 오류가 발생했습니다.');
+    }
+});
+</script>

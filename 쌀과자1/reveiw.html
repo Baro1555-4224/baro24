@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 리뷰</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .review-section {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .review-title {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #333333;
+      text-align: left;
+    }
+
+    .average-rating {
+      font-size: 0.9rem;
+      color: #666666;
+    }
+
+    .review-container {
+      overflow: hidden;
+      position: relative;
+      height: 510px; /* 리뷰 3개가 명확히 보이도록 높이 설정 */
+    }
+
+    .review {
+      padding: 15px;
+      margin-bottom: 10px;
+      border: 1px solid #eeeeee;
+      border-radius: 10px;
+      background-color: #f9f9f9;
+      text-align: left;
+      position: relative;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    .review.slide-out {
+      animation: slideOut 0.5s ease-out forwards;
+    }
+
+    .review:last-child {
+      margin-bottom: 0;
+    }
+
+    .review .author {
+      font-weight: bold;
+      color: #007BFF;
+      margin-bottom: 5px;
+    }
+
+    .review .type {
+      font-size: 0.9rem;
+      color: #666666;
+      margin-bottom: 10px;
+    }
+
+    .review .stars {
+      color: #FFD700;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .review .content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .review .content .tag {
+      background-color: #ffffff;
+      border: 1px solid #dddddd;
+      border-radius: 5px;
+      padding: 5px 10px;
+      font-size: 0.85rem;
+      color: #555555;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="review-section">
+    <div class="review-header">
+      <div class="review-title">실시간 리뷰</div>
+      <div class="average-rating">평균 평점: 4.8점</div>
+    </div>
+    <div class="review-container" id="review-container">
+      <!-- 리뷰가 추가될 영역 -->
+    </div>
+  </div>
+
+<script>
+  // 성씨 목록
+  const surnames = ["김", "이", "박", "최", "정", "조", "한", "오", "유", "강", "임", "윤", "장", "신", "황", "송", "홍", "서", "고", "문"];
+
+  // 선택 가능한 코멘트(박스 형태)
+  const commentTemplates = [
+    "기사님이 친절해요",
+    "일정이 빠르게 끝났어요",
+    "짐을 안전하게 옮겨주셨어요",
+    "시간 약속을 잘 지켜주셨어요",
+    "서비스가 전반적으로 만족스러워요",
+    "이사비용이 합리적이었어요",
+    "복잡한 짐도 신경 써주셨어요",
+    "상담원이 친절했어요",
+    "전문성 최고에요",
+    "가격이 좋았어요",
+    "청소도 해주셨어요",
+    "재이용 의사 있어요",
+    "전반적으로 괜찮았어요",
+    "추가비용 없었어요",
+    "A/S 해주셨어요"
+  ];
+
+  // 리뷰 템플릿
+  const reviewTemplates = {
+    가정이사: "가정이사",
+    소형이사: "소형이사",
+    사무실이사: "사무실이사"
+  };
+
+  // 파트너기사와 직영팀 비율
+  function getTeamType() {
+    return Math.random() < 0.9 ? " - 파트너이사팀" : " - 직영팀";
+  }
+
+  // 리뷰 컨테이너
+  const reviewContainer = document.getElementById("review-container");
+
+  // 최대 리뷰 표시 개수
+  const maxReviews = 3;
+
+  // 별점 생성 함수
+  function getStars() {
+    const random = Math.random();
+    const stars = random < 0.9 ? 5 : 4; // 별점 5점: 90%, 별점 4점: 10%
+    return "★".repeat(stars) + "☆".repeat(5 - stars);
+  }
+
+  // 리뷰 유형 생성 함수
+  function getReviewType() {
+    const random = Math.random();
+    if (random < 0.4) {
+      return "가정이사"; // 40%
+    } else if (random < 0.9) {
+      return "소형이사"; // 50%
+    } else {
+      return "사무실이사"; // 10%
+    }
+  }
+
+  // 코멘트 박스 생성 함수
+  function getComments() {
+    const randomComments = [];
+    const commentCount = Math.floor(Math.random() * 3) + 2; // 2~4개의 코멘트
+    while (randomComments.length < commentCount) {
+      const comment =
+        commentTemplates[Math.floor(Math.random() * commentTemplates.length)];
+      if (!randomComments.includes(comment)) {
+        randomComments.push(comment);
+      }
+    }
+    return randomComments;
+  }
+
+  // 리뷰 생성 함수
+  function createReview() {
+    const type = getReviewType();
+    const author = `${surnames[Math.floor(Math.random() * surnames.length)]}**`;
+    const comments = getComments();
+    const stars = getStars();
+    const teamType = getTeamType();
+
+    const reviewElement = document.createElement("div");
+    reviewElement.classList.add("review");
+    reviewElement.innerHTML = `
+      <div class="author">${author}</div>
+      <div class="type">${type}${teamType}</div>
+      <div class="stars">${stars}</div>
+      <div class="content">
+        ${comments.map(comment => `<span class="tag">${comment}</span>`).join("")}
+      </div>
+    `;
+
+    return reviewElement;
+  }
+
+  // 초기 리뷰 생성
+  function initializeReviews() {
+    for (let i = 0; i < maxReviews; i++) {
+      const review = createReview();
+      reviewContainer.appendChild(review);
+    }
+  }
+
+  // 새로운 리뷰 추가
+  function addNewReview() {
+    const newReview = createReview();
+
+    // 새로운 리뷰를 맨 위에 추가
+    reviewContainer.prepend(newReview);
+
+    // 마지막 리뷰에 슬라이드 아웃 애니메이션 추가 후 제거
+    if (reviewContainer.children.length > maxReviews) {
+      const lastReview = reviewContainer.lastChild;
+      lastReview.classList.add("slide-out");
+      lastReview.addEventListener("animationend", () => {
+        lastReview.remove();
+      });
+    }
+  }
+
+  // 초기화 및 자동 업데이트
+  initializeReviews(); // 초기 리뷰 3개 생성
+  setInterval(addNewReview, 5000); // 5초마다 새로운 리뷰 추가
+</script>
+</body>
+</html>

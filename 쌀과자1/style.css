@@ -1,0 +1,1043 @@
+/* /web/upload/css/module/estimation/style.css */
+.quote-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  
+  .step-container {
+    display: none;
+  }
+  
+  .step-container.active {
+    display: block;
+  }
+  
+  /* 프로그레스 바 */
+  .progress-container {
+    margin-bottom: 40px;
+  }
+  
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #E6E6E6;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  
+  .progress-fill {
+    position: absolute;
+    height: 100%;
+    background: #1219F7;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .progress-label {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .progress-label.active {
+    color: #1219F7;
+    font-weight: 500;
+  }
+  
+  /* 폼 요소 */
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .move-type-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .select-button {
+    width: 100%;
+    padding: 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+  }
+  
+  .select-button.active {
+    border-color: #1219F7;
+    background: #E8E9FE;
+  }
+  
+  .select-button.active .text-gray-400 {
+    color: #1219F7;
+  }
+  
+  .move-type-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .move-type-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  /* 주소 입력 관련 스타일 */
+  .address-input-group {
+    margin-bottom: 10px;
+  }
+  
+  .address-wrapper {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .input-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+  
+  .search-button {
+    background: #1219F7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 20px;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    height: 42px;
+  }
+  
+  .detail-address {
+    margin-top: 8px;
+  }
+  
+  /* 체크박스 그룹 */
+  .checkbox-group {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .checkbox-input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+  }
+  
+  /* 버튼 스타일 */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .nav-button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
+  }
+  
+  .prev-button {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+  }
+  
+  .next-button {
+    background: #1219F7;
+    color: white;
+  }
+  
+  .next-button.full-width {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+  }
+  
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  /* 모달 스타일 */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .modal-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .close-button {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+  }
+  
+  .calendar-container {
+    margin-bottom: 20px;
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .weekday {
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    color: #666;
+  }
+  
+  .calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  
+  .calendar-day {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+  }
+  
+  .calendar-day:hover:not(.disabled) {
+    background: #f5f5f5;
+  }
+  
+  .calendar-day.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+  }
+  
+  .calendar-day.selected {
+    background: #E8E9FE;
+    border-color: #1219F7;
+    color: #1219F7;
+  }
+  
+  .date-notice {
+    font-size: 12px;
+    color: #666;
+    text-align: left;
+    padding-left: 10px;
+    line-height: 1.5;
+  }
+  
+  /* 반응형 */
+  @media screen and (max-width: 480px) {
+    .quote-form-container {
+      padding: 15px;
+    }
+    
+    .calendar-container {
+      width: calc(100% - 30px);
+    }
+    
+    .checkbox-group {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .nav-buttons {
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .nav-button {
+      width: 100%;
+    }
+  }
+  
+  /* Flex 유틸리티 */
+  .flex {
+    display: flex;
+  }
+  
+  .items-start {
+    align-items: flex-start;
+  }
+  
+  .gap-4 {
+    gap: 1rem;
+  }
+  
+  .mt-1 {
+    margin-top: 0.25rem;
+  }
+  
+  .text-gray-400 {
+    color: #9ca3af;
+  }
+  
+  .text-blue-600 {
+    color: #2563eb;
+  }
+  
+  .floor-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .floor-options select {
+    flex: 2;
+  }
+  
+  .floor-options .checkbox-label {
+    flex: 1;
+    white-space: nowrap;
+    min-width: 80px;
+  }
+  
+  .elevator-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .elevator-select-button {
+    flex: 1;
+    cursor: pointer;
+  }
+  
+  .elevator-select-button input[type="radio"] {
+    display: none;
+  }
+  
+  .elevator-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    transition: all 0.2s ease;
+  }
+  
+  .elevator-select-button input[type="radio"]:checked + .elevator-button-content {
+    border-color: #1219F7;
+    background: #E8E9FE;
+  }
+  
+  /* 모바일에서도 반계단이 줄바꿈되지 않도록 */
+  @media screen and (max-width: 480px) {
+    .floor-options {
+        flex-wrap: nowrap;
+    }
+    
+    .floor-options select {
+        flex: 1.5;
+    }
+  }
+  
+  .calendar-notice {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .calendar-notice p {
+    margin: 5px 0;
+    line-height: 1.4;
+  }
+  
+  /* 2개월 이후 날짜 스타일 */
+  .calendar-cell.future-disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background: #f9f9f9;
+  }
+  
+  .calendar-cell.future-disabled:hover {
+    background: #f9f9f9;
+  }
+  
+  .date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .flexible-date-label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .flexible-date-label input[type="checkbox"] {
+    margin: 0;
+    width: 16px;
+    height: 16px;
+  }
+  
+  .quick-date-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  
+  .quick-date-button {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .quick-date-button:hover {
+    background: #f5f5f5;
+  }
+  
+  .quick-date-button.calendar {
+    grid-column: span 2;
+    background: #E8E9FE;
+    border-color: #1219F7;
+    color: #1219F7;
+  }
+  
+  .quick-date-button.calendar:hover {
+    background: #d5d7fe;
+  }
+  
+  .elevator-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .elevator-button {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+  }
+  
+  .elevator-button:hover {
+    background: #f5f5f5;
+  }
+  
+  .elevator-button.active {
+    border-color: #1219F7;
+    background: #E8E9FE;
+    color: #1219F7;
+  }
+  
+  .calendar-cell.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+    background: #f9f9f9;
+  }
+  
+  .calendar-cell.disabled:hover {
+    background: #f9f9f9;
+  }
+  
+  .nav-button i {
+    vertical-align: middle;
+    margin: 0 4px;
+  }
+  
+  .form-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .modal-footer {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+  
+  .date-select-wrapper {
+    position: relative;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .date-select-wrapper .input-field {
+    margin-bottom: 0;
+  }
+  
+  .calendar-button {
+    background: #1219F7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .calendar-button:hover {
+    background: #0a0f99;
+  }
+  
+  .calendar-button i {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .date-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .special-date-dot {
+    position: absolute;
+    bottom: 2px;
+    width: 4px;
+    height: 4px;
+    background-color: #e53e3e;
+    border-radius: 50%;
+  }
+  
+  .calendar-day {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+  }
+  
+  /* 모달 하단 설명 추가 */
+  .calendar-legend {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .legend-dot {
+    width: 4px;
+    height: 4px;
+    background-color: #e53e3e;
+    border-radius: 50%;
+  }
+  
+  /* 주소 검색 관련 스타일 */
+  .address-search {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .address-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .floor-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  
+  .floor-select select {
+    flex: 2;
+  }
+  
+  /* 선택 버튼 그룹 스타일 */
+  .select-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .select-buttons .select-button {
+    flex: 1;
+    min-width: 80px;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .select-buttons .select-button:hover {
+    background: #f5f5f5;
+  }
+  
+  .select-buttons .select-button.active {
+    border-color: #1219F7;
+    background: #E8E9FE;
+    color: #1219F7;
+  }
+  
+  /* 가구 인원수 버튼 */
+  .family-size .select-button {
+    flex: 1;
+    min-width: calc(33.33% - 8px);
+  }
+  
+  /* 집 평수 버튼 */
+  .house-size .select-button {
+    flex: 1;
+  }
+  
+  .optional-label {
+    font-size: 12px;
+    color: #666;
+    font-weight: normal;
+    margin-left: 4px;
+  }
+  
+  /* 주소 검색 입력 필드 스타일 수정 */
+  .address-search .input-field {
+    cursor: pointer;
+    background: #fff url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') no-repeat calc(100% - 12px) center;
+    padding-right: 40px;
+  }
+  
+  .address-search .search-button {
+    display: none; /* 검색 버튼 숨김 */
+  }
+  
+  /* 주소 검색 모달 스타일 */
+  .address-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+  
+  .address-modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    min-height: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .address-modal .modal-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    z-index: 10000;
+  }
+  
+  .address-modal .modal-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0;
+    color: #333;
+  }
+  
+  .address-modal .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  #address-search-container-start,
+  #address-search-container-end {
+    flex: 1;
+    width: 100%;
+    height: calc(100% - 50px);
+  }
+  
+  /* iframe 스타일 수정 */
+  #address-search-container-start iframe,
+  #address-search-container-end iframe {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  /* 특수 이사 품목 그리드 */
+  .special-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .checkbox-card {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .checkbox-card:hover {
+    background: #f5f5f5;
+  }
+  
+  .checkbox-card input[type="checkbox"] {
+    margin-right: 8px;
+  }
+  
+  .checkbox-card input[type="checkbox"]:checked + span {
+    color: #1219F7;
+  }
+  
+  .checkbox-card:has(input[type="checkbox"]:checked) {
+    border-color: #1219F7;
+    background: #E8E9FE;
+  }
+  
+  /* 개인정보 동의 */
+  .privacy-agreement {
+    margin-bottom: 10px;
+  }
+  
+  .privacy-terms {
+    font-size: 12px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    line-height: 1.5;
+  }
+  
+  .required {
+    color: #e53e3e;
+    font-size: 12px;
+  }
+  
+  /* 메모 입력 필드 */
+  textarea.input-field {
+    resize: vertical;
+    min-height: 100px;
+  }
+  
+  /* 완료 페이지 스타일 */
+  .complete-container {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  
+  .complete-icon {
+    margin-bottom: 20px;
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    color: #1219F7;
+  }
+  
+  .complete-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1219F7;
+  }
+  
+  .complete-message {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 30px;
+  }
+  
+  .home-button {
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .quote-summary {
+    margin-top: 30px;
+    text-align: left;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+  }
+  
+  .quote-summary h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .summary-content dl {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+  }
+  
+  .summary-content dt {
+    font-weight: 500;
+    color: #666;
+  }
+  
+  .summary-content dd {
+    margin: 0;
+    color: #333;
+  }
+  
+  /* 로딩 스타일 추가 */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #1219F7;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .loading-text {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #1219F7;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  /* 개인정보 동의 모달 스타일 */
+  .privacy-modal {
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .privacy-content {
+    padding: 20px;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  
+  .privacy-content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 25px 0 15px;
+    color: #333;
+  }
+  
+  .privacy-content h4:first-child {
+    margin-top: 0;
+  }
+  
+  .privacy-content p {
+    margin: 8px 0;
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .privacy-date {
+    margin-top: 30px;
+    color: #888;
+    font-size: 13px;
+  }
+  
+  .privacy-agreement a {
+    color: #1219F7;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .modal-body {
+    max-height: calc(90vh - 150px);
+    overflow-y: auto;
+  }
+  
+  .modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+  }
+  
+  .card {
+    /* 기존 스타일... */
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .card.selected {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+  }
+  
+  .quantity-controls {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .quantity-controls button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .simple-item .item-quantity {
+    display: none; /* 기본적으로 숨김 */
+  }
+  
+  .simple-item.selected .item-quantity {
+    display: block; /* 선택 시 표시 */
+  }
+  
+  .simple-item .quantity-controls {
+    display: none;
+  }
+  
+  .simple-item.selected .quantity-controls {
+    display: flex;
+  }

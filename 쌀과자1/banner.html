@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>텍스트와 이미지 슬라이드</title>
+  <style>
+    /* 배너 컨테이너 */
+    .slim-slide-banner {
+      width: 100%;
+      max-width: 720px; /* 최대 가로 크기 */
+      height: 130px; /* 고정된 세로 크기 */
+      margin: 20px auto;
+      border-radius: 10px; /* 모서리 둥글게 */
+      overflow: hidden;
+      display: flex; /* 좌우 배치 */
+      align-items: center; /* 세로 가운데 정렬 */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 */
+      background-color: #f9f9f9; /* 배경색 */
+    }
+
+    /* 텍스트 영역 */
+    .text-container {
+      flex: 1; /* 남은 공간을 채움 */
+      padding: 0 20px;
+      font-size: 1rem;
+      color: #333;
+      opacity: 1; /* 초기 상태 */
+      transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과 */
+    }
+
+    .text-container h2 {
+      font-size: 1.2rem;
+      margin: 0 0 10px 0;
+      color: #000;
+    }
+
+    .text-container p {
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* 이미지 영역 */
+    .image-container {
+      flex: 0 0 130px; /* 고정된 너비 */
+      height: 100%; /* 배너 높이에 맞춤 */
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-left: 5px solid #ddd; /* 구분선 */
+      opacity: 1; /* 초기 상태 */
+      transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과 */
+    }
+  </style>
+</head>
+<body>
+  <div class="slim-slide-banner">
+    <div class="text-container">
+      <h2>당일 신청, 당일 이사!</h2>
+      <p>27년의 경험과 신뢰로 언제나 최고의 서비스를 제공합니다.</p>
+    </div>
+    <div class="image-container">
+      <img src="//ecimg.cafe24img.com/pg1543b64568399067/er2007/web/bbbbbbb213.png" alt="슬라이드 이미지">
+    </div>
+  </div>
+
+  <script>
+    const textContents = [
+      {
+        title: "당일 신청, 당일 이사 가능!",
+        description: "25년의 경험과 신뢰로 언제나 최고의 서비스를 제공합니다.",
+        image: "//ecimg.cafe24img.com/pg1543b64568399067/er2007/web/bbbbbbb213.png",
+      },
+      {
+        title: "빠른 A/S 서비스!",
+        description: "직영팀은 삼성화재 이사화물 보험에 가입되어 있습니다.",
+        image: "//ecimg.cafe24img.com/pg1543b64568399067/er2007/web/BOHUM.jpg",
+      },
+      {
+        title: "믿을 수 있는 이사 서비스!",
+        description: "국토부 인증 허가업체입니다.",
+        image: "//ecimg.cafe24img.com/pg1543b64568399067/er2007/web/JUSUN.jpg",
+      },
+      {
+        title: "파트너 기사님 만족도 평균 4.8점!",
+        description: "고객님들만을 생각하는 파트너 기사님들입니다.",
+        image: "//ecimg.cafe24img.com/pg1543b64568399067/er2007/web/123123.png",
+      }
+    ];
+
+    const banner = document.querySelector(".slim-slide-banner");
+    const textContainer = document.querySelector(".text-container");
+    const imageContainer = document.querySelector(".image-container img");
+
+    let currentIndex = 0;
+
+    // 슬라이드 변경 함수
+    function updateSlide(index) {
+      // 페이드 아웃
+      textContainer.style.opacity = 0;
+      imageContainer.style.opacity = 0;
+
+      setTimeout(() => {
+        const { title, description, image } = textContents[index];
+        textContainer.innerHTML = `<h2>${title}</h2><p>${description}</p>`;
+        imageContainer.src = image;
+
+        // 페이드 인
+        textContainer.style.opacity = 1;
+        imageContainer.style.opacity = 1;
+      }, 500); // 0.5초 후 변경
+    }
+
+    // 자동 슬라이드 기능
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % textContents.length;
+      updateSlide(currentIndex);
+    }, 5000); // 5초 간격으로 슬라이드 전환
+  </script>
+</body>
+</html>
